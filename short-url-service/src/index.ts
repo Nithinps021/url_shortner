@@ -10,7 +10,7 @@
 
 export interface Env {
 	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-	MY_KV_NAMESPACE: "fce7ed1dff654189b040368f60632d2f";
+	DB: KVNamespace;
 	//
 	// Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
 	// MY_DURABLE_OBJECT: DurableObjectNamespace;
@@ -40,13 +40,31 @@ export default {
 			const hashString = md5hasing(url)
 
 			//storing in kv
-		
+			if(env.DB ==null){
+				console.log("is null")
+			}
+			console.log("value ", env.DB)
+			await env.DB.put(hashString, url)
 			//return
 			return new Response(JSON.stringify({"hashedString": hashString}), {
 				headers:{
 					"content-type": "application/json;charset=UTF-8",
 				}
 			})
+		}
+		const {pathname} = new URL(request.url)
+		if(request.method=="GET"){
+			if(pathname=="/"){
+				return new Response('Hello World!');
+			}
+			else{
+				const key = pathname.slice(1)
+				const url = await env.DB.get(key, { type: "text" })
+				if (url===null){
+					return new Response('Route not found', { status: 404 });
+				}
+				return Response.redirect(url, 302)
+			}
 		}
 		return new Response('Hello World!');
 	},

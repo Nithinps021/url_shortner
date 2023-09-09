@@ -10,7 +10,7 @@
 
 export interface Env {
 	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-	// MY_KV_NAMESPACE: KVNamespace;
+	DB: KVNamespace;
 	//
 	// Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
 	// MY_DURABLE_OBJECT: DurableObjectNamespace;
@@ -27,6 +27,21 @@ export interface Env {
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+		const {pathname} = new URL(request.url)
+		if(request.method=="GET"){
+			if(pathname=="/"){
+				return new Response('Hello World!');
+			}
+			else{
+				const key = pathname.slice(1)
+				console.log("PATH NAME ",pathname, " KEY NAME", key )
+				const url = await env.DB.get(key, { type: "text" })
+				if (url===null){
+					return new Response('Route not found', { status: 404 });
+				}
+				return Response.redirect(url, 302)
+			}
+		}
 		return new Response('Hello World!');
 	},
 };
