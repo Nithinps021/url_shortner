@@ -27,6 +27,14 @@ export interface Env {
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+		if(request.method == "POST"){
+			const requestData = await request.json();
+			return new Response(JSON.stringify(requestData), {
+				headers:{
+					"content-type": "application/json;charset=UTF-8",
+				}
+			})
+		}
 		return new Response('Hello World!');
 	},
 };
