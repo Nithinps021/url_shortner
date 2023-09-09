@@ -35,7 +35,7 @@ export default {
 			else{
 				const key = pathname.slice(1)
 				console.log("PATH NAME ",pathname, " KEY NAME", key )
-				const url = await env.DB.get(key, { type: "text" })
+				const url = await env.DB.get(key, { type: "text" , cacheTtl:30*24*60*60*60})
 				if (url===null){
 					return new Response('Route not found', { status: 404 });
 				}
