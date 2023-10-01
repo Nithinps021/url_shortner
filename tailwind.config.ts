@@ -15,6 +15,11 @@ const config: Config = {
         neonPink: '#ff6ac1',
         neonGreen: '#39ff14',
         neonBlue: '#00bfff',
+        navyBlue:"#003060",
+        blue:"#055C9D",
+        blueGrotto:"#0E86D4",
+        babyBlue:"#68BBE3"
+
       },
     },
   },
